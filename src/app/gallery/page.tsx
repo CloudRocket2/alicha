@@ -6,6 +6,7 @@ import { ArrowLeft, Upload, Trash2, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { saveImage, getImages, deleteImage } from "@/utils/db";
 import { CuteHeart, Sparkle, Bow, Flower } from "@/components/Icons";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
 
 type GalleryImage = {
   id: string;
@@ -15,6 +16,7 @@ type GalleryImage = {
 export default function GalleryPage() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  useEscapeKey();
 
   useEffect(() => {
     getImages().then(setImages).catch(console.error);

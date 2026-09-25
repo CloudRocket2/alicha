@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Plus, Trash2, CheckCircle2, Circle } from "lucide-react";
 import Link from "next/link";
 import { CuteHeart, Sparkle, Bow, Flower } from "@/components/Icons";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
 
 type Todo = {
   id: string;
@@ -15,6 +16,7 @@ type Todo = {
 export default function TodoPage() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTask, setNewTask] = useState("");
+  useEscapeKey();
 
   useEffect(() => {
     const saved = localStorage.getItem("my-melody-todos");

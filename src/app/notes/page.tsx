@@ -5,10 +5,12 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { CuteHeart, Sparkle, Bow, Flower } from "@/components/Icons";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
 
 export default function NotesPage() {
   const [note, setNote] = useState("");
   const [savedStatus, setSavedStatus] = useState("");
+  useEscapeKey();
 
   useEffect(() => {
     const saved = localStorage.getItem("my-melody-notes");

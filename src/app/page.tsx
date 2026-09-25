@@ -3,19 +3,49 @@
 import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { LogOut, Music, Settings, Bell, ChevronRight, NotebookPen, ListTodo, Image as ImageIcon, Timer } from "lucide-react";
+import { LogOut, Music, Settings, Bell, ChevronRight, NotebookPen, ListTodo, Image as ImageIcon, Timer, Search } from "lucide-react";
 import { CuteHeart, Sparkle, Bow, Flower } from "@/components/Icons";
+import { useEffect, useState } from "react";
 
 const GRID_ITEMS = [
   { id: "notes", title: "NOTES", subtitle: "Jot down your thoughts!", color: "bg-[#FFB6C1]", path: "/notes", row: 0, col: 0, icon: NotebookPen },
   { id: "todo", title: "TO-DO LIST", subtitle: "Stay on top of tasks", color: "bg-[#FF69B4]", path: "/todo", row: 0, col: 1, icon: ListTodo },
   { id: "gallery", title: "GALLERY", subtitle: "Important screenshots", color: "bg-[#FFE4E1]", path: "/gallery", row: 1, col: 0, icon: ImageIcon },
   { id: "timer", title: "POMODORO", subtitle: "Focus time!", color: "bg-[#FFF0F5]", path: "/timer", row: 1, col: 1, icon: Timer },
+  { id: "research", title: "RESEARCH", subtitle: "Saved links & tabs", color: "bg-white", path: "/research", row: 2, col: 0, icon: Search },
 ];
 
 export default function Dashboard() {
   const { focusedId, setFocusedId } = useKeyboardNavigation(GRID_ITEMS, 2);
   const router = useRouter();
+  const [streak, setStreak] = useState(1);
+
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    
+    const savedStreak = localStorage.getItem('my-melody-streak');
+    if (savedStreak) {
+      const { count, lastActiveDate } = JSON.parse(savedStreak);
+      
+      if (lastActiveDate === yesterday) {
+        // Logged in consecutive day
+        const newCount = count + 1;
+        setStreak(newCount);
+        localStorage.setItem('my-melody-streak', JSON.stringify({ count: newCount, lastActiveDate: today }));
+      } else if (lastActiveDate === today) {
+        // Already logged in today
+        setStreak(count);
+      } else {
+        // Streak broken
+        setStreak(1);
+        localStorage.setItem('my-melody-streak', JSON.stringify({ count: 1, lastActiveDate: today }));
+      }
+    } else {
+      // First time logging in
+      localStorage.setItem('my-melody-streak', JSON.stringify({ count: 1, lastActiveDate: today }));
+    }
+  }, []);
 
   const handleLogout = () => {
     document.cookie = "isLoggedIn=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
@@ -97,7 +127,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-8 font-bold text-2xl">
           <span className="flex items-center gap-2">alicha <CuteHeart size={24} /></span>
           <div className="brutal-border-sm border-white px-4 py-2 text-lg bg-melody-pink text-black flex items-center gap-2">
-            <Sparkle size={20} /> Study Streak: 1 day
+            <Sparkle size={20} /> Study Streak: {streak} {streak === 1 ? 'day' : 'days'}
           </div>
           <Music className="cursor-pointer hover:text-melody-hotpink transition-colors hover:scale-110" size={28} />
           <Bell className="cursor-pointer hover:text-melody-hotpink transition-colors hover:scale-110" size={28} />

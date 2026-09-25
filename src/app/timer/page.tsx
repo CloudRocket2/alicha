@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Play, Pause, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { CuteHeart, Sparkle, Bow, Flower } from "@/components/Icons";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
 
 const POMODORO_TIME = 25 * 60;
 const BREAK_TIME = 5 * 60;
@@ -13,6 +14,7 @@ export default function TimerPage() {
   const [timeLeft, setTimeLeft] = useState(POMODORO_TIME);
   const [isActive, setIsActive] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
+  useEscapeKey();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;

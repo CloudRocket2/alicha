@@ -7,6 +7,22 @@ import { motion, AnimatePresence } from "framer-motion";
 export function SpotifyPlayer() {
   const [isOpen, setIsOpen] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [spotifyUrl, setSpotifyUrl] = useState("");
+  const [embedUrl, setEmbedUrl] = useState("https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4Zy0AHP?utm_source=generator&theme=0");
+
+  const handleUrlSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (spotifyUrl.includes("open.spotify.com")) {
+        const urlObj = new URL(spotifyUrl);
+        const path = urlObj.pathname;
+        setEmbedUrl(`https://open.spotify.com/embed${path}?utm_source=generator&theme=0`);
+      }
+      setSpotifyUrl("");
+    } catch (err) {
+      console.error("Invalid URL");
+    }
+  };
 
   if (!isOpen) {
     return (
@@ -43,17 +59,32 @@ export function SpotifyPlayer() {
         </div>
 
         {!isMinimized && (
-          <div className="rounded-xl overflow-hidden brutal-border-sm border-melody-white">
-            <iframe 
-              style={{ borderRadius: '12px' }} 
-              src="https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4Zy0AHP?utm_source=generator&theme=0" 
-              width="100%" 
-              height="152" 
-              frameBorder="0" 
-              allowFullScreen={false}
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-              loading="lazy"
-            ></iframe>
+          <div className="flex flex-col gap-3">
+            <div className="rounded-xl overflow-hidden brutal-border-sm border-melody-white">
+              <iframe 
+                style={{ borderRadius: '12px' }} 
+                src={embedUrl} 
+                width="100%" 
+                height="152" 
+                frameBorder="0" 
+                allowFullScreen={false}
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                loading="lazy"
+              ></iframe>
+            </div>
+            
+            <form onSubmit={handleUrlSubmit} className="flex gap-2">
+              <input 
+                type="text"
+                value={spotifyUrl}
+                onChange={(e) => setSpotifyUrl(e.target.value)}
+                placeholder="Paste Spotify Link..."
+                className="flex-1 bg-white text-black px-2 py-1 text-sm brutal-border-sm focus:outline-none"
+              />
+              <button type="submit" className="bg-melody-pink text-white px-2 py-1 text-sm brutal-border-sm font-bold">
+                Play
+              </button>
+            </form>
           </div>
         )}
       </motion.div>
