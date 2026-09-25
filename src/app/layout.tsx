@@ -9,7 +9,7 @@ const gaegu = Gaegu({
 });
 
 export const metadata: Metadata = {
-  title: "My Melody Study Hub",
+  title: "alicha",
   description: "A cute study web app",
 };
 

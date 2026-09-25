@@ -40,7 +40,7 @@ export default function LoginPage() {
           </div>
           <h1 className="text-5xl font-bold text-melody-hotpink mb-2">Welcome Back!</h1>
           <p className="text-2xl text-melody-black flex items-center justify-center gap-2">
-            Study time with My Melody <Sparkle size={24} />
+            hi alicha <Sparkle size={24} />
           </p>
         </div>
 
