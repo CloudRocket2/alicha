@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-melody-pink: #FFB6C1;
+  --color-melody-hotpink: #FF69B4;
+  --color-melody-light: #FFF0F5;
+  --color-melody-white: #FFFFFF;
+  --color-melody-black: #1A1A1A;
+  --font-sans: var(--font-gaegu);
+}
+
+:root {
+  --background: #FFF0F5;
+  --foreground: #1A1A1A;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Neo-brutalism / Kawaii util classes */
+@layer utilities {
+  .brutal-border {
+    border: 4px solid #1A1A1A;
+    border-radius: 1.5rem;
+    box-shadow: 6px 6px 0px 0px #FFB6C1, 6px 6px 0px 4px #1A1A1A;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .brutal-border:hover {
+    box-shadow: 10px 10px 0px 0px #FF69B4, 10px 10px 0px 4px #1A1A1A;
+    transform: translateY(-4px) rotate(-1deg);
+  }
+
+  .brutal-border-focus {
+    box-shadow: 0px 0px 0px 6px #FFF0F5, 12px 12px 0px 0px #FF69B4, 12px 12px 0px 4px #1A1A1A;
+    transform: translateY(-6px) scale(1.02);
+  }
+  
+  .brutal-border-sm {
+    border: 3px solid #1A1A1A;
+    border-radius: 1rem;
+    box-shadow: 4px 4px 0px 0px #FFB6C1, 4px 4px 0px 3px #1A1A1A;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .brutal-border-sm:hover {
+    box-shadow: 6px 6px 0px 0px #FF69B4, 6px 6px 0px 3px #1A1A1A;
+    transform: translateY(-2px);
+  }
+}
