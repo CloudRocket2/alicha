@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Music, X, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function SpotifyPlayer() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false); // start closed by default maybe? Wait, user wants it to work when clicked, maybe it's fine.
   const [isMinimized, setIsMinimized] = useState(false);
   const [spotifyUrl, setSpotifyUrl] = useState("");
   const [embedUrl, setEmbedUrl] = useState("https://open.spotify.com/embed/playlist/0vvXsWCC9xrXsKd4Zy0AHP?utm_source=generator&theme=0");
+
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener('open-spotify', handleOpen);
+    return () => window.removeEventListener('open-spotify', handleOpen);
+  }, []);
 
   const handleUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault();

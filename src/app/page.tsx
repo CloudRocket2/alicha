@@ -6,6 +6,11 @@ import { useRouter } from "next/navigation";
 import { LogOut, Music, Settings, Bell, ChevronRight, NotebookPen, ListTodo, Image as ImageIcon, Timer, Search } from "lucide-react";
 import { CuteHeart, Sparkle, Bow, Flower } from "@/components/Icons";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+
+const HeatmapModal = dynamic(() => import('@/components/DashboardModals').then(mod => mod.HeatmapModal), { ssr: false });
+const NotificationsModal = dynamic(() => import('@/components/DashboardModals').then(mod => mod.NotificationsModal), { ssr: false });
+const SettingsModal = dynamic(() => import('@/components/DashboardModals').then(mod => mod.SettingsModal), { ssr: false });
 
 const GRID_ITEMS = [
   { id: "notes", title: "NOTES", subtitle: "Jot down your thoughts!", color: "bg-[#FFB6C1]", path: "/notes", row: 0, col: 0, icon: NotebookPen },
@@ -20,6 +25,11 @@ export default function Dashboard() {
   const router = useRouter();
   const [streak, setStreak] = useState(1);
 
+  // Modal States
+  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
@@ -29,20 +39,16 @@ export default function Dashboard() {
       const { count, lastActiveDate } = JSON.parse(savedStreak);
       
       if (lastActiveDate === yesterday) {
-        // Logged in consecutive day
         const newCount = count + 1;
         setStreak(newCount);
         localStorage.setItem('my-melody-streak', JSON.stringify({ count: newCount, lastActiveDate: today }));
       } else if (lastActiveDate === today) {
-        // Already logged in today
         setStreak(count);
       } else {
-        // Streak broken
         setStreak(1);
         localStorage.setItem('my-melody-streak', JSON.stringify({ count: 1, lastActiveDate: today }));
       }
     } else {
-      // First time logging in
       localStorage.setItem('my-melody-streak', JSON.stringify({ count: 1, lastActiveDate: today }));
     }
   }, []);
@@ -51,6 +57,8 @@ export default function Dashboard() {
     document.cookie = "isLoggedIn=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
     router.push("/login");
   };
+
+  const openSpotify = () => window.dispatchEvent(new Event('open-spotify'));
 
   return (
     <main className="flex-1 p-8 pb-32 flex flex-col items-center justify-center min-h-screen relative overflow-hidden">
@@ -126,14 +134,27 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center gap-8 font-bold text-2xl">
           <span className="flex items-center gap-2">alicha <CuteHeart size={24} /></span>
-          <div className="brutal-border-sm border-white px-4 py-2 text-lg bg-melody-pink text-black flex items-center gap-2">
+          <button 
+            onClick={() => setShowHeatmap(true)}
+            className="brutal-border-sm border-white px-4 py-2 text-lg bg-melody-pink text-black flex items-center gap-2 hover:bg-melody-hotpink hover:text-white transition-colors cursor-pointer"
+          >
             <Sparkle size={20} /> Study Streak: {streak} {streak === 1 ? 'day' : 'days'}
-          </div>
-          <Music className="cursor-pointer hover:text-melody-hotpink transition-colors hover:scale-110" size={28} />
-          <Bell className="cursor-pointer hover:text-melody-hotpink transition-colors hover:scale-110" size={28} />
-          <Settings className="cursor-pointer hover:text-melody-hotpink transition-colors hover:scale-110" size={28} />
+          </button>
+          <button onClick={openSpotify} title="Open Spotify">
+            <Music className="cursor-pointer hover:text-melody-hotpink transition-colors hover:scale-110" size={28} />
+          </button>
+          <button onClick={() => setShowNotifications(true)} title="Notifications">
+            <Bell className="cursor-pointer hover:text-melody-hotpink transition-colors hover:scale-110" size={28} />
+          </button>
+          <button onClick={() => setShowSettings(true)} title="Settings">
+            <Settings className="cursor-pointer hover:text-melody-hotpink transition-colors hover:scale-110" size={28} />
+          </button>
         </div>
       </div>
+
+      <HeatmapModal isOpen={showHeatmap} onClose={() => setShowHeatmap(false)} />
+      <NotificationsModal isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
+      <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} />
     </main>
   );
 }

@@ -24,6 +24,23 @@ export default function TimerPage() {
       }, 1000);
     } else if (timeLeft === 0) {
       setIsActive(false);
+      
+      // Log activity if it was a focus session
+      if (!isBreak) {
+        const today = new Date().toISOString().split('T')[0];
+        const rawActivity = localStorage.getItem('my-melody-activity') || '{}';
+        try {
+          const activity = JSON.parse(rawActivity);
+          activity[today] = (activity[today] || 0) + 1;
+          localStorage.setItem('my-melody-activity', JSON.stringify(activity));
+          
+          // Trigger a global event so the heatmap instantly updates if open
+          window.dispatchEvent(new Event('activity-logged'));
+        } catch (e) {
+          console.error("Failed to parse activity data");
+        }
+      }
+
       // Auto-switch mode on completion
       if (isBreak) {
         setIsBreak(false);
